@@ -8,7 +8,6 @@
  ********************************************************************************************/
 
 
-
 /**
  * Returns the result of concatenation of two strings.
  *
@@ -104,6 +103,7 @@ function getFirstChar(value) {
  *   '\tHello, World! ' => 'Hello, World!'
  */
 function removeLeadingAndTrailingWhitespaces(value) {
+    return value.trim()
     throw new Error('Not implemented');
 }
 
@@ -119,12 +119,17 @@ function removeLeadingAndTrailingWhitespaces(value) {
  *   'cat', 3 => 'catcatcat'
  */
 function repeatString(value, count) {
+    let result = '';
+    for (let i = 0; i < count; i++) {
+        result += value;
+    }
+    return result;
     throw new Error('Not implemented');
 }
 
 /**
  * Remove the first occurrence of string inside another string
- * 
+ *
  * @param {string} str
  * @param {string} value
  * @return {string}
@@ -135,6 +140,7 @@ function repeatString(value, count) {
  *   'ABABAB','BA' => 'ABAB'
  */
 function removeFirstOccurrences(str, value) {
+    return str.replace(value, '')
     throw new Error('Not implemented');
 }
 
@@ -166,6 +172,7 @@ function unbracketTag(str) {
  *  'abcdefghijklmnopqrstuvwxyz' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  */
 function convertToUpperCase(str) {
+    return str.toUpperCase()
     throw new Error('Not implemented');
 }
 
@@ -180,6 +187,7 @@ function convertToUpperCase(str) {
  *   'info@gmail.com' => ['info@gmail.com']
  */
 function extractEmails(str) {
+    return str.split(';')
     throw new Error('Not implemented');
 }
 
@@ -207,6 +215,33 @@ function extractEmails(str) {
  *
  */
 function getRectangleString(width, height) {
+    let rectangle = '';
+    for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+            if (i === 0) {
+                if (j === 0)
+                    rectangle += '┌'
+                else if (j === width - 1)
+                    rectangle += '┐'
+                else
+                    rectangle += '─'
+            } else if (i === height - 1) {
+                if (j === 0)
+                    rectangle += '└'
+                else if (j === width - 1)
+                    rectangle += '┘'
+                else
+                    rectangle += '─'
+            } else {
+                if (j === 0 || j === width - 1)
+                    rectangle += '│'
+                else
+                    rectangle += ' '
+            }
+        }
+        rectangle += '\n'
+    }
+    return rectangle
     throw new Error('Not implemented');
 }
 
@@ -227,6 +262,18 @@ function getRectangleString(width, height) {
  *
  */
 function encodeToRot13(str) {
+
+    return str.split('').map(ch => {
+        if (ch.charCodeAt(0) >= 'a'.charCodeAt(0) && ch.charCodeAt(0) <=  'z'.charCodeAt(0)) {
+            return String.fromCharCode((ch.charCodeAt(0) + 13 > 'z'.charCodeAt(0)) ? ch.charCodeAt(0) - 13 : ch.charCodeAt(0) + 13)
+        }
+        else if (ch.charCodeAt(0) >= 'A'.charCodeAt(0) && ch.charCodeAt(0) <= 'Z'.charCodeAt(0)) {
+            return String.fromCharCode((ch.charCodeAt(0) + 13 > 'Z'.charCodeAt(0)) ? ch.charCodeAt(0) - 13 : ch.charCodeAt(0) + 13)
+        }
+        else {
+            return ch
+        }
+    }).join('')
     throw new Error('Not implemented');
 }
 
@@ -244,29 +291,30 @@ function encodeToRot13(str) {
  *   isString(new String('test')) => true
  */
 function isString(value) {
+    return typeof value === typeof 'string'
     throw new Error('Not implemented');
 }
 
 
 /**
  * Returns playid card id.
- * 
+ *
  * Playing cards inittial deck inclides the cards in the following order:
- * 
+ *
  *  'A♣','2♣','3♣','4♣','5♣','6♣','7♣','8♣','9♣','10♣','J♣','Q♣','K♣',
  *  'A♦','2♦','3♦','4♦','5♦','6♦','7♦','8♦','9♦','10♦','J♦','Q♦','K♦',
  *  'A♥','2♥','3♥','4♥','5♥','6♥','7♥','8♥','9♥','10♥','J♥','Q♥','K♥',
  *  'A♠','2♠','3♠','4♠','5♠','6♠','7♠','8♠','9♠','10♠','J♠','Q♠','K♠'
- * 
+ *
  * (see https://en.wikipedia.org/wiki/Standard_52-card_deck)
  * Function returns the zero-based index of specified card in the initial deck above.
- * 
+ *
  * @param {string} value
  * @return {number}
  *
  * @example
  *   'A♣' => 0
- *   '2♣' => 1 
+ *   '2♣' => 1
  *   '3♣' => 2
  *     ...
  *   'Q♠' => 50
