@@ -342,6 +342,11 @@ function propagateItemsByPositionIndex(arr) {
  *   [ 10, 10, 10, 10 ] => [ 10, 10, 10 ]
  */
 function get3TopItems(arr) {
+
+   return arr.sort((a, b) => {
+      return b - a;
+   }).slice(0,3)
+
    throw new Error('Not implemented');
 }
  
@@ -360,6 +365,11 @@ function get3TopItems(arr) {
  *   [ 1, '2' ] => 1
  */
 function getPositivesCount(arr) {
+
+   return arr.filter(el => {
+      return el > 0 && typeof el === 'number'
+   }).length
+
    throw new Error('Not implemented');
 }
  
@@ -378,6 +388,7 @@ function getPositivesCount(arr) {
  */
 function sortDigitNamesByNumericOrder(arr) {
    throw new Error('Not implemented');
+   return arr.sort((a, b))
 }
 
 /** 
