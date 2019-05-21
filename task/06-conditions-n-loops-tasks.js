@@ -548,39 +548,21 @@ function getMatrixProduct(m1, m2) {
  *
  */
 function evaluateTicTacToePosition(position) {
-
-    // for (let i = 0; i < 3; i++) {
-    //     if (position[i].every((v) => {
-    //         console.log(v)
-    //         return v === 'X';
-    //     })) return 'X';
-    //     if (position.every((v) => {
-    //         return v[i] === 'X';
-    //     })) return 'X';
-    //     // if (position[i].every((v1, k, arr) => {
-    //     //     console.log(v1)
-    //     //     return v1 === '0';
-    //     // })) return '0';
-    //     // if (position.every((v, k, arr) => {
-    //     //     return v[i] === '0';
-    //     // })) return '0';
-    // }
     for (let i = 0; i < 3; i++) {
-        // if (position[i].every((v, k, arr) => {
-        //     console.log(v)
-        //     return v === 'X';
-        // })) return 'X';
-        // if (position.every((v, k, arr) => {
-        //     return v[i] === 'X';
-        // })) return 'X';
         if (position[i].every((v) => {
-            console.log(v)
+            return v === 'X';
+        }) && !position[i].includes(undefined) && position[i].length === 3) return 'X';
+        if (position.every((v) => {
+            return v[i] === 'X';
+        })) return 'X';
+        if (position[i].every((v) => {
             return v === '0';
-        })) return '0';
+        }) && !position[i].includes(undefined) && position[i].length === 3) return '0';
         if (position.every((v) => {
             return v[i] === '0';
         })) return '0';
     }
+
     if (position[0][0] === position[1][1] && position[1][1] === position[2][2] || position[0][2] === position[1][1] && position[1][1] === position[2][0])
         return position[1][1];
 
