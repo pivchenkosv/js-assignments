@@ -22,8 +22,12 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(width, height) {
-    throw new Error('Not implemented');
+var Rectangle = function (width, height) {
+    this.width = width
+    this.height = height
+    this.getArea = () => {
+        return this.height * this.width
+    }
 }
 
 
@@ -38,6 +42,7 @@ function Rectangle(width, height) {
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
 function getJSON(obj) {
+    return JSON.stringify(obj)
     throw new Error('Not implemented');
 }
 
@@ -55,6 +60,9 @@ function getJSON(obj) {
  */
 function fromJSON(proto, json) {
     throw new Error('Not implemented');
+    let obj = JSON.parse(json)
+    return new proto.constructor(...Object.values(obj));
+
 }
 
 
@@ -108,34 +116,123 @@ function fromJSON(proto, json) {
 
 const cssSelectorBuilder = {
 
-    element: function(value) {
-        throw new Error('Not implemented');
+    // stringify: function stringify() {
+    //     return new cssSelector()
+    // },
+
+    element: function (value) {
+        return new cssSelector().element(value)
+        // throw new Error('Not implemented');
     },
 
-    id: function(value) {
-        throw new Error('Not implemented');
+    id: function (value) {
+        return new cssSelector().id(value)
+        // throw new Error('Not implemented');
     },
 
-    class: function(value) {
-        throw new Error('Not implemented');
+    class: function (value) {
+        return new cssSelector().class(value)
+        // throw new Error('Not implemented');
     },
 
-    attr: function(value) {
-        throw new Error('Not implemented');
+    attr: function (value) {
+        return new cssSelector().attr(value)
+        // throw new Error('Not implemented');
     },
 
-    pseudoClass: function(value) {
-        throw new Error('Not implemented');
+    pseudoClass: function (value) {
+        return new cssSelector().pseudoClass(value)
+        // throw new Error('Not implemented');
     },
 
-    pseudoElement: function(value) {
-        throw new Error('Not implemented');
+    pseudoElement: function (value) {
+        return new cssSelector().pseudoElement(value)
+        // throw new Error('Not implemented');
     },
 
-    combine: function(selector1, combinator, selector2) {
-        throw new Error('Not implemented');
+    combine: function (selector1, combinator, selector2) {
+        return new cssSelector(selector1.bricks.concat(' ' + combinator + ' ').concat(selector2.bricks))
+        // throw new Error('Not implemented');
     },
 };
+
+class cssSelector {
+
+    constructor(bricks = []) {
+        this.bricks = bricks
+        return this
+    };
+
+    stringify() {
+        let stringified = this.bricks.reduce((accum, el ) => accum + el, '');
+        this.bricks = [];
+        return stringified
+    };
+
+    element (value) {
+        if (this.bricks.length > 0) {
+            if (this.bricks.find(brick => brick.match(/#|\.|\[|:|::/)))
+                throw new Error("Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element")
+            throw new Error("Element, id and pseudo-element should not occur more then one time inside the selector")
+        }
+        // throw "Element, id and pseudo-element should not occur more then one time inside the selector"
+        this.bricks.push(value);
+        return this
+        // throw new Error('Not implemented');
+    };
+
+    id (value) {
+        if (this.bricks.find(brick => brick.match(/#/))) {
+            throw new Error("Element, id and pseudo-element should not occur more then one time inside the selector")
+        }
+        if (this.bricks.find(brick => brick.match(/\.|\[|:|::/)))
+            throw new Error("Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element")
+        this.bricks.push('#' + value);
+        return this
+        // throw new Error('Not implemented');
+    };
+
+    class (value) {
+        if (this.bricks.find(brick => brick.match(/\[|:|::/)))
+            throw new Error("Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element")
+        this.bricks.push('.' + value);
+        return this
+        // throw new Error('Not implemented');
+    };
+
+    attr (value) {
+        if (this.bricks.find(brick => brick.match(/:|::/)))
+            throw new Error("Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element")
+        this.bricks.push('[' + value + ']');
+        return this
+        // throw new Error('Not implemented');
+    };
+
+    pseudoClass (value) {
+        if (this.bricks.find(brick => brick.match(/::/)))
+            throw new Error("Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element")
+        this.bricks.push(':' + value);
+        return this
+        // throw new Error('Not implemented');
+    };
+
+    pseudoElement (value) {
+        if (this.bricks.find(brick => brick.match(/::/))) {
+            throw new Error("Element, id and pseudo-element should not occur more then one time inside the selector")
+        }
+        this.bricks.push('::' + value);
+        return this
+        // throw new Error('Not implemented');
+    };
+
+    combine (selector1, combinator, selector2) {
+        let bricks = selector1.bricks.concat(' ' + combinator + ' ').concat(selector2.bricks)
+        console.log('bricks ', bricks)
+        return new cssSelector(bricks)
+        // throw new Error('Not implemented');
+    };
+
+}
 
 
 module.exports = {
