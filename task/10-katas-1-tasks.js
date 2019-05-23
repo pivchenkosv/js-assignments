@@ -93,8 +93,45 @@ function createCompassPoints() {
  *
  *   'nothing to do' => 'nothing to do'
  */
-function* expandBraces(str) {
-    throw new Error('Not implemented');
+function expandBraces(str) {
+    let varieties = []
+    // console.log(varieties)
+    if (!str.match(/(?<={)[^{}]+(?=})/g))
+        return [str];
+    let consts = str.split(/{[^{}]+}/)
+    str.match(/(?<={)[^{}]+(?=})/g).forEach(el => {
+        varieties.push(el.split(','))
+    })
+
+    varieties = varieties.map((el, i, arr) => {
+        return el.map(item => {
+            return i === arr.length - 1 ? consts[i] + item + consts[i + 1] : consts[i] + item
+        })
+    })
+
+    while (varieties.length > 1) {
+        let newEl = []
+        varieties[0].forEach(el1 => {
+            varieties[1].forEach(el2 => {
+                newEl.push(el1 + el2)
+            })
+        })
+        varieties = varieties.slice(2)
+        varieties.push(newEl)
+    }
+    varieties = varieties.reduce((acc, val) => acc.concat(val), [])
+    while (varieties.find(el => el.match(/(?<={)[^{}]+(?=})/g))) {
+        varieties = varieties.map(el => {
+            if (el.match(/(?<={)[^{}]+(?=})/g)) {
+                return expandBraces(el)
+            } else return el;
+        })
+        varieties = varieties.reduce((acc, val) => acc.concat(val), [])
+
+    }
+
+    return varieties.filter((el, i) => varieties.indexOf(el) === i);
+    // throw new Error('Not implemented');
 }
 
 
