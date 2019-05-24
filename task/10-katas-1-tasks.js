@@ -163,6 +163,42 @@ function expandBraces(str) {
  *
  */
 function getZigZagMatrix(n) {
+
+    function* generateSequence() {
+        for (let i = 0; i < Math.pow(n, 2); i++)
+            yield i;
+        return Math.pow(n, 2);
+    }
+
+    let sequence = generateSequence()
+
+    let matrix = []
+    for (let i = -n + 1; i < n; i++) {
+        matrix.push([])
+        for (let j = 0; j < n - Math.abs(i); j++) {
+            matrix[n + i - 1].push(sequence.next().value)
+        }
+    }
+    matrix = matrix.map((el, i) => {
+        if (i % 2 === 0)
+            return el
+        else return el.reverse()
+    })
+
+    let result = [];
+    for (let i = 0; i < n; i++) {
+        result.push([])
+    }
+
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            result[i].push(matrix[j].pop())
+        }
+        matrix.shift()
+    }
+
+    return result
+
     throw new Error('Not implemented');
 }
 
@@ -188,6 +224,28 @@ function getZigZagMatrix(n) {
  *
  */
 function canDominoesMakeRow(dominoes) {
+    let nodes = dominoes.reduce((acc, val) => acc.concat(val), []).filter((el, i, arr) => {
+        return arr.indexOf(el) === i;
+    }).map(el => {
+        return {key: el, value: 0}
+    });
+    let doubles = dominoes.filter((el, i, arr) => {
+        return el[0] === el[1]
+    })
+        let notDoubles = dominoes.filter((el, i, arr) => {
+        return el[0] !== el[1]
+    })
+    nodes.forEach((node, i) => {
+        notDoubles.forEach(d => {
+            if (node.key === d[0] || node.key === d[1] )
+                nodes[i].value += 1;
+        })
+    })
+
+    if (nodes.some(el => el.value === 0))
+        return false
+    nodes = nodes.filter(node => node.value % 2 === 1)
+    return nodes.length === 0 || nodes.length === 2;
     throw new Error('Not implemented');
 }
 
