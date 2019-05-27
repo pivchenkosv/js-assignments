@@ -34,6 +34,35 @@
  *
  */
 function parseBankAccount(bankAccount) {
+
+    const numbers = [
+        {key: 0, value: [' _ ', '| |', '|_|']},
+        {key: 1, value: ['   ', '  |', '  |']},
+        {key: 2, value: [' _ ', ' _|', '|_ ']},
+        {key: 3, value: [' _ ', ' _|', ' _|']},
+        {key: 4, value: ['   ', '|_|', '  |']},
+        {key: 5, value: [' _ ', '|_ ', ' _|']},
+        {key: 6, value: [' _ ', '|_ ', '|_|']},
+        {key: 7, value: [' _ ', '  |', '  |']},
+        {key: 8, value: [' _ ', '|_|', '|_|']},
+        {key: 9, value: [' _ ', '|_|', ' _|']}
+    ]
+
+    bankAccount = bankAccount.split('\n');
+    let accountNumber = '';
+
+
+    for (let i = 0; i < 9; i++) {
+        let number = numbers.find(num => {
+            return num.value[0] === bankAccount[0].substring(i * 3, i * 3 + 3)
+                && num.value[1] === bankAccount[1].substring(i * 3, i * 3 + 3)
+                && num.value[2] === bankAccount[2].substring(i * 3, i * 3 + 3)
+        })
+
+        accountNumber += number.key;
+    }
+
+    return parseInt(accountNumber);
     throw new Error('Not implemented');
 }
 
@@ -63,7 +92,20 @@ function parseBankAccount(bankAccount) {
  *                                                                                                'characters.'
  */
 function* wrapText(text, columns) {
-    throw new Error('Not implemented');
+    const words = text.split(' ');
+    let result = [];
+    let line = '';
+    words.forEach(word => {
+        if (line.length + word.length > columns) {
+            result.push(line.trim())
+            line = word + ' ';
+        } else {
+            line += word + ' ';
+        }
+    })
+    result.push(line.trim())
+    for (let r of result)
+        yield r
 }
 
 
@@ -100,7 +142,70 @@ const PokerRank = {
 }
 
 function getPokerHandRank(hand) {
-    throw new Error('Not implemented');
+    const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+
+    hand = hand.map(h => {
+        return h.length === 3 ? [h.substring(0, 2), h.substring(2)] : [h[0], h[1]]
+    }).sort((a, b) => cards.indexOf(a[0]) - cards.indexOf(b[0]))
+
+    let flag = true;
+    for (let i = 0; i < 4; i++) {
+        if (hand[i][0] === '2' && hand.some(el => el[0] === 'A'))
+            continue
+        if (hand[i + 1][0] === 'A' && hand.some(el => el[0] === '2'))
+            continue
+        if (cards.indexOf(hand[i + 1][0]) - cards.indexOf(hand[i][0]) !== 1)
+            flag = false
+    }
+
+    if (hand.every((card, i) => {
+        return card[1] === hand[0][1]
+    }) && flag) return PokerRank.StraightFlush
+
+    let count = 0
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+            if (hand[i][0] === hand[j][0]) {
+                count++
+            }
+        }
+        if (count === 4)
+            return PokerRank.FourOfKind
+        if (count === 3) {
+            let card = hand[i];
+            return hand.some(el => {
+                return hand.some(h => {
+                    return h[0] === el[0] && el[0] !== card[0] && h !== el;
+
+                })
+            }) ? PokerRank.FullHouse : PokerRank.ThreeOfKind
+        } else count = 0;
+    }
+
+    if (hand.every((card, i) => {
+        return card[1] === hand[0][1]
+    })) return PokerRank.Flush
+
+    let temp = hand.map(h => h[0]).filter((h, i, arr) => arr.indexOf(h) !== arr.lastIndexOf(h))
+    if (temp.length === 4)
+        return PokerRank.TwoPairs
+
+    if (temp.length === 2)
+        return PokerRank.OnePair
+
+    flag = true;
+    for (let i = 0; i < 4; i++) {
+        if (hand[i][0] === '2' && hand.some(el => el[0] === 'A'))
+            continue
+        if (hand[i + 1][0] === 'A' && hand.some(el => el[0] === '2'))
+            continue
+        if (cards.indexOf(hand[i + 1][0]) - cards.indexOf(hand[i][0]) !== 1)
+            flag = false
+    }
+    if (flag)
+        return PokerRank.Straight
+
+    return PokerRank.HighCard
 }
 
 
@@ -110,10 +215,10 @@ function getPokerHandRank(hand) {
  * The task is to break the figure in the rectangles it is made of.
  *
  * NOTE: The order of rectanles does not matter.
- * 
+ *
  * @param {string} figure
  * @return {Iterable.<string>} decomposition to basic parts
- * 
+ *
  * @example
  *
  *    '+------------+\n'+
@@ -135,12 +240,12 @@ function getPokerHandRank(hand) {
  *    '+-------------+\n'
  */
 function* getFigureRectangles(figure) {
-   throw new Error('Not implemented');
+    throw new Error('Not implemented');
 }
 
 
 module.exports = {
-    parseBankAccount : parseBankAccount,
+    parseBankAccount: parseBankAccount,
     wrapText: wrapText,
     PokerRank: PokerRank,
     getPokerHandRank: getPokerHandRank,
