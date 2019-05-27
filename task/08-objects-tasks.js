@@ -158,8 +158,10 @@ const cssSelectorBuilder = {
 
 class cssSelector {
 
-    constructor(bricks = []) {
-        this.bricks = bricks
+    constructor(bricks) {
+        if (bricks === undefined)
+            this.bricks = []
+        else this.bricks = bricks
         return this
     };
 
