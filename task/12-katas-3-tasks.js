@@ -65,7 +65,24 @@ function* getPermutations(chars) {
  *    [ 1, 6, 5, 10, 8, 7 ] => 18  (buy at 1,6,5 and sell all at 10)
  */
 function getMostProfitFromStockQuotes(quotes) {
-    throw new Error('Not implemented');
+    let result = 0;
+    while (quotes.length > 0) {
+        let max = quotes.find(el => {
+            return quotes.every(q => el >= q)
+        });
+        let maxIndex = quotes.indexOf(max);
+        if (maxIndex === 0) {
+            quotes = quotes.slice(maxIndex + 1)
+        }
+        let count = 0, sum = 0;
+        for (let i = maxIndex - 1; i >= 0; i--) {
+            count++;
+            sum += quotes[i];
+        }
+        quotes = quotes.slice(maxIndex + 1)
+        result += count * max - sum;
+    }
+    return result;
 }
 
 
@@ -92,11 +109,21 @@ function UrlShortener() {
 
 UrlShortener.prototype = {
 
+    store: [],
+
     encode: function(url) {
+        let text = "";
+
+        for (let i = 0; i < 5; i++)
+            text += this.urlAllowedChars.charAt(Math.floor(Math.random() * this.urlAllowedChars.length));
+        this.store = [...this.store, {shortUrl: 'http://short/' + text, sourceUrl: url}]
+        return 'http://short/' + text;
         throw new Error('Not implemented');
     },
     
     decode: function(code) {
+        let sourceUrl = this.store.find(el => el.shortUrl === code)
+        return sourceUrl ? sourceUrl.sourceUrl : '';
         throw new Error('Not implemented');
     } 
 }
